@@ -22,11 +22,11 @@ port.on("open", function () {
   // open logic
 });
 
-port.on("readable", function () {
-  console.log("Data:", port.read());
-});
+// port.on("readable", function () {
+//   console.log("Data:", port.read());
+// });
 
-// Switches the port into "flowing mode"
-port.on("data", function (data) {
-  console.log("Data:", data);
-});
+const parser = port.pipe(
+  new Delimiter({ delimiter: [0x1b, 0x1b, 0x1b, 0x1b] })
+);
+parser.on("data", console.log);
