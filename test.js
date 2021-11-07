@@ -44,6 +44,8 @@ const deviceParamConfig = {
   },
 };
 
+//   sprintf(ascii,"%s%lu&n=%lu&e=%lu&p=%lu", "/sunnylog/meterupload.php?h=", mvBezugHT, mvBezugNT, mvEinspeisung, mvPVProduction );
+
 SerialPort.list().then((ports) => {
   ports.forEach(function (port) {
     console.log(port.path, port.pnpId, port.manufacturer); // or console.log(port)
@@ -73,7 +75,8 @@ function deviceReader(deviceParams) {
   parser.on("data", (buf) => {
     for (const register of deviceParams.registers) {
       let reading = readMeter(buf, register.delimiter, deviceParams.bytes);
-      console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
+      if (reading)
+        console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
     }
   });
 }
