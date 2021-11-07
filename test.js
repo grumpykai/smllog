@@ -4,6 +4,7 @@ const Delimiter = require("@serialport/parser-delimiter");
 const deviceParamConfig = {
   mainDevice: {
     serialPath: "/dev/ttyUSB0",
+    bytes: 8,
     registers: [
       {
         obis: "1.8.1",
@@ -30,6 +31,7 @@ const deviceParamConfig = {
   },
   generationDevice: {
     serialPath: "/dev/ttyUSB1",
+    bytes: 5,
     registers: [
       {
         obis: "2.8.1",
@@ -70,17 +72,17 @@ function deviceReader(deviceParams) {
 
   parser.on("data", (buf) => {
     for (const register of deviceParams.registers) {
-      let reading = readMeter(buf, register.delimiter);
+      let reading = readMeter(buf, register.delimiter, deviceParams.bytes);
       console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
     }
   });
 }
 
-function readMeter(buf, delimiter) {
+function readMeter(buf, delimiter, byteCount = 8) {
   let index = buf.indexOf(delimiter);
   let reading = 0;
   if (index >= 0) {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < byteCount; i++) {
       reading = reading * 256 + buf[index + 15 + i];
     }
   }
