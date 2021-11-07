@@ -1,4 +1,5 @@
 var SerialPort = require("serialport");
+const Delimiter = require("@serialport/parser-delimiter");
 
 SerialPort.list().then((ports) => {
   ports.forEach(function (port) {
