@@ -70,7 +70,7 @@ function deviceReader(deviceParams) {
 
   parser.on("data", (buf) => {
     for (const register of deviceParams.registers) {
-      let reading = readMeter(buf, deviceParams.register.delimiter);
+      let reading = readMeter(buf, register.delimiter);
       console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
     }
   });
