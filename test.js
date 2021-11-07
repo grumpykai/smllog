@@ -32,7 +32,7 @@ const parser = port.pipe(
 );
 parser.on("data", (buf) => {
   //console.log(data)
-  const values = Buffer.from(buf).values();
+  //   const values = Buffer.from(buf).values();
   let index = buf.indexOf(
     Uint8Array.from([
       0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62, 0x1e,
@@ -42,7 +42,7 @@ parser.on("data", (buf) => {
   let reading = 0;
   if (index >= 0) {
     for (let i = 0; i < 8; i++) {
-      reading = reading * 256 + values(index + 15 + i);
+      reading = reading * 256 + buf[index + 15 + i];
     }
     console.log("HT at " + index + " Reading: " + reading);
   }
