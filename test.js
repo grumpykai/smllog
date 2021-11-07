@@ -65,12 +65,12 @@ parser.on("data", (buf) => {
 
 function readMeter(buf, delimiter) {
   let index = buf.indexOf(delimiter);
-  let reading = -1;
+  let reading = 0;
   if (index >= 0) {
     for (let i = 0; i < 8; i++) {
       reading = reading * 256 + buf[index + 15 + i];
     }
-    console.log("HT at " + index + " Reading: " + reading);
+    // console.log("HT at " + index + " Reading: " + reading);
   }
   return reading;
 }
