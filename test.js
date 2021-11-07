@@ -47,7 +47,7 @@ const parser = port.pipe(
 );
 parser.on("data", (buf) => {
   let registerHigh = readMeter(buf, registerDelimiters.highTariff);
-  if (registerHigh >= 0) {
+  if (registerHigh > 0) {
     let registerLow = readMeter(buf, registerDelimiters.lowTariff);
     let registerFeedIn = readMeter(buf, registerDelimiters.feedIn);
     console.log(
