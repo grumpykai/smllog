@@ -32,7 +32,7 @@ const parser = port.pipe(
 );
 parser.on("data", (buf) => {
   //console.log(data)
-  const values = buf.values();
+  const values = Buffer.from(buf).values();
   let index = buf.indexOf(
     Uint8Array.from([
       0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62, 0x1e,
