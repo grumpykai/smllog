@@ -119,6 +119,7 @@ function httpGet(url) {
   fetch(url)
     .then((response) => {
       response
+        .text()
         .then((text) => console.log(text))
         .catch((err) => console.log("CATCH RESPONSE: " + err));
     })
