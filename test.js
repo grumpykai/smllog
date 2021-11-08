@@ -118,9 +118,11 @@ function sendAfterInterval() {
 function httpGet(url) {
   fetch(url)
     .then((response) => {
-      response.then((text) => console.log).catch((err) => console.log);
+      response
+        .then((text) => console.log(text))
+        .catch((err) => console.log("CATCH RESPONSE: " + err));
     })
-    .catch((err) => console.log);
+    .catch((err) => console.log("CATCH FETCH: " + err));
 }
 
 function readMeter(buf, delimiter, byteCount = 8) {
