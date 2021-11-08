@@ -1,5 +1,12 @@
 var SerialPort = require("serialport");
 const Delimiter = require("@serialport/parser-delimiter");
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
+let lastSentTimestamp = 0;
+const collectedReadings = {};
+
+const programParams = require("./params.json");
 
 const deviceParamConfig = {
   mainDevice: {
@@ -8,6 +15,7 @@ const deviceParamConfig = {
     registers: [
       {
         obis: "1.8.1",
+        urlParam: "h",
         delimiter: Uint8Array.from([
           0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
           0x1e, 0x52, 0xff, 0x59,
@@ -15,6 +23,7 @@ const deviceParamConfig = {
       },
       {
         obis: "1.8.2",
+        urlParam: "n",
         delimiter: Uint8Array.from([
           0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x02, 0xff, 0x01, 0x01, 0x62,
           0x1e, 0x52, 0xff, 0x59,
@@ -22,6 +31,7 @@ const deviceParamConfig = {
       },
       {
         obis: "2.8.0",
+        urlParam: "e",
         delimiter: Uint8Array.from([
           0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
           0x1e, 0x52, 0xff, 0x59,
@@ -35,6 +45,7 @@ const deviceParamConfig = {
     registers: [
       {
         obis: "2.8.1",
+        urlParam: "p",
         delimiter: Uint8Array.from([
           0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
           0x1e, 0x52, 0xff, 0x56,
@@ -77,8 +88,23 @@ function deviceReader(deviceParams) {
       let reading = readMeter(buf, register.delimiter, deviceParams.bytes);
       if (reading)
         console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
+      collectedReadings[register.urlParam] = reading;
     }
+    sendAfterInterval();
   });
+}
+
+function sendAfterInterval() {
+  const now = Date.now();
+
+  let url = programParams.url + "?d=1";
+
+  if (now > lastSentTimestamp + 10000) {
+    for (const param in collectedReadings) {
+      url = url + "&" + param + "=" + collectedReadings[param];
+    }
+    console.log(url);
+  }
 }
 
 function readMeter(buf, delimiter, byteCount = 8) {
