@@ -109,9 +109,16 @@ function sendAfterInterval() {
     if (validReadings == 4) {
       //Todo : needs to be count from Device Params with urlparam set
       console.log(`R: ${validReadings}, URL: ${url}`);
+      httpGet(url);
       lastSentTimestamp = now;
     }
   }
+}
+
+function httpGet(url) {
+  fetch(url).then((response) => {
+    response.then((text) => console.log);
+  });
 }
 
 function readMeter(buf, delimiter, byteCount = 8) {
