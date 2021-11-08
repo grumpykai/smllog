@@ -108,7 +108,7 @@ function sendAfterInterval() {
     }
     if (validReadings == 4) {
       //Todo : needs to be count from Device Params with urlparam set
-      console.log(url);
+      console.log(`R: ${validReadings}, URL: ${url}`);
       lastSentTimestamp = now;
     }
   }
