@@ -96,16 +96,22 @@ function deviceReader(deviceParams) {
 
 function sendAfterInterval() {
   const now = Date.now();
-
   let url = programParams.url + "?d=1";
 
   if (now > lastSentTimestamp + 10000) {
+    let validReadings = 0;
     for (const param in collectedReadings) {
-      url = url + "&" + param + "=" + collectedReadings[param];
+      if (collectedReadings[param] > 0) {
+        url = url + "&" + param + "=" + collectedReadings[param];
+      }
+      validReadings++;
     }
-    console.log(url);
+    if (validReadings == 4) {
+      //Todo : needs to be count from Device Params with urlparam set
+      console.log(url);
+      lastSentTimestamp = now;
+    }
   }
-  lastSentTimestamp = now;
 }
 
 function readMeter(buf, delimiter, byteCount = 8) {
