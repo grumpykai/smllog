@@ -105,6 +105,7 @@ function sendAfterInterval() {
     }
     console.log(url);
   }
+  lastSentTimestamp = now;
 }
 
 function readMeter(buf, delimiter, byteCount = 8) {
