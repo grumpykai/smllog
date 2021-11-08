@@ -8,6 +8,8 @@ const collectedReadings = {};
 
 const programParams = require("./params.json");
 
+const uploadInterval = programParams.uploadInterval || 60000;
+
 const deviceParamConfig = {
   mainDevice: {
     serialPath: "/dev/ttyUSB0",
@@ -98,7 +100,7 @@ function sendAfterInterval() {
   const now = Date.now();
   let url = programParams.url + "?d=1";
 
-  if (now > lastSentTimestamp + 10000) {
+  if (now > lastSentTimestamp + uploadInterval) {
     let validReadings = 0;
     for (const param in collectedReadings) {
       if (collectedReadings[param] > 0) {
