@@ -103,8 +103,8 @@ function sendAfterInterval() {
     for (const param in collectedReadings) {
       if (collectedReadings[param] > 0) {
         url = url + "&" + param + "=" + collectedReadings[param];
+        validReadings++;
       }
-      validReadings++;
     }
     if (validReadings == 4) {
       //Todo : needs to be count from Device Params with urlparam set
