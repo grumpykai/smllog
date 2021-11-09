@@ -22,6 +22,8 @@ const uploadInterval = programParams.uploadInterval || 60000;
 console.log(`[INIT] Upload Interval is ${uploadInterval / 1000} seconds.`);
 
 const deviceParamConfig = programParams.deviceParameters;
+
+console.log(deviceParamConfig.mainDevice);
 // {
 //   mainDevice: {
 //     serialPath: "/dev/ttyUSB0",
