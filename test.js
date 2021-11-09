@@ -156,8 +156,8 @@ function readMeter(buf, delimiter, byteCount = 8) {
 
 function countRegistersForUpload(deviceParamConfig) {
   let count = 0;
-  for (const device of deviceParamConfig) {
-    for (const register of device.registers) {
+  for (const deviceKey in deviceParamConfig) {
+    for (const register of deviceParamConfig[deviceKey].registers) {
       if (register.urlParam) count++;
     }
   }
