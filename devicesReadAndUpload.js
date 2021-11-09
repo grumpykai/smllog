@@ -105,7 +105,11 @@ function deviceReader(deviceParams) {
 
   parser.on("data", (buf) => {
     for (const register of deviceParams.registers) {
-      let reading = readMeter(buf, register.delimiter, deviceParams.bytes);
+      let reading = readMeter(
+        buf,
+        Uint8Array.from(register.delimiter),
+        deviceParams.bytes
+      );
       // if (reading)
       // console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
       collectedReadings[register.urlParam] = reading;
