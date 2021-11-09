@@ -23,3 +23,23 @@ sudo npm install -g node-gyp
 sudo npm install -g node-pre-gyp
 sudo npm install serialport --unsafe-perm
 ```
+
+## Adding to crontab
+
+```crontab
+# m h  dom mon dow   command
+@reboot /home/pi/smllog/devicesReadAndUpload.sh
+```
+
+# Required Configuration
+
+The Upload URL **must** be configured in file **params.json**. A template for the file is supplied as params-template.json
+
+```json
+{
+  "url": "http://<<SERVER:PORT>/PATH",
+  "uploadInterval": 60000
+}
+```
+
+Node-Fetch is used to send the meter readings via GET to that url. The get parameter names can be configured in the device configuration, also in file params.json

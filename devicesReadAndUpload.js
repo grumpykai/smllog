@@ -21,52 +21,53 @@ const uploadInterval = programParams.uploadInterval || 60000;
 
 console.log(`[INIT] Upload Interval is ${uploadInterval / 1000} seconds.`);
 
-const deviceParamConfig = {
-  mainDevice: {
-    serialPath: "/dev/ttyUSB0",
-    bytes: 8,
-    registers: [
-      {
-        obis: "1.8.1",
-        urlParam: "h",
-        delimiter: Uint8Array.from([
-          0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
-          0x1e, 0x52, 0xff, 0x59,
-        ]),
-      },
-      {
-        obis: "1.8.2",
-        urlParam: "n",
-        delimiter: Uint8Array.from([
-          0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x02, 0xff, 0x01, 0x01, 0x62,
-          0x1e, 0x52, 0xff, 0x59,
-        ]),
-      },
-      {
-        obis: "2.8.0",
-        urlParam: "e",
-        delimiter: Uint8Array.from([
-          0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
-          0x1e, 0x52, 0xff, 0x59,
-        ]),
-      },
-    ],
-  },
-  generationDevice: {
-    serialPath: "/dev/ttyUSB1",
-    bytes: 5,
-    registers: [
-      {
-        obis: "2.8.1",
-        urlParam: "p",
-        delimiter: Uint8Array.from([
-          0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
-          0x1e, 0x52, 0xff, 0x56,
-        ]),
-      },
-    ],
-  },
-};
+const deviceParamConfig = programParams.deviceParameters;
+// {
+//   mainDevice: {
+//     serialPath: "/dev/ttyUSB0",
+//     bytes: 8,
+//     registers: [
+//       {
+//         obis: "1.8.1",
+//         urlParam: "h",
+//         delimiter: Uint8Array.from([
+//           0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
+//           0x1e, 0x52, 0xff, 0x59,
+//         ]),
+//       },
+//       {
+//         obis: "1.8.2",
+//         urlParam: "n",
+//         delimiter: Uint8Array.from([
+//           0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x02, 0xff, 0x01, 0x01, 0x62,
+//           0x1e, 0x52, 0xff, 0x59,
+//         ]),
+//       },
+//       {
+//         obis: "2.8.0",
+//         urlParam: "e",
+//         delimiter: Uint8Array.from([
+//           0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
+//           0x1e, 0x52, 0xff, 0x59,
+//         ]),
+//       },
+//     ],
+//   },
+//   generationDevice: {
+//     serialPath: "/dev/ttyUSB1",
+//     bytes: 5,
+//     registers: [
+//       {
+//         obis: "2.8.1",
+//         urlParam: "p",
+//         delimiter: Uint8Array.from([
+//           0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
+//           0x1e, 0x52, 0xff, 0x56,
+//         ]),
+//       },
+//     ],
+//   },
+// };
 
 const registerCountForUpload = countRegistersForUpload(deviceParamConfig);
 
@@ -76,6 +77,7 @@ SerialPort.list().then((ports) => {
   });
 });
 
+// ToDo: create readers dynamically based on device Config
 deviceReader(deviceParamConfig.mainDevice);
 deviceReader(deviceParamConfig.generationDevice);
 
