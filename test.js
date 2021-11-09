@@ -161,6 +161,6 @@ function countRegistersForUpload(deviceParamConfig) {
       if (register.urlParam) count++;
     }
   }
-  console.log(`[INIT] ${registerCountForUpload} registers for upload.`);
+  console.log(`[INIT] ${count} registers for upload.`);
   return count;
 }
