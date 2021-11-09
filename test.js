@@ -6,7 +6,14 @@ const fetch = (...args) =>
 let lastSentTimestamp = 0;
 const collectedReadings = {};
 
-const programParams = require("./params.json");
+try {
+  const programParams = require("./params.json");
+  console.log(
+    `[INIT] params.json loaded. URL for upload: ${programParams.url}`
+  );
+} catch (err) {
+  console.log(`[ERROR] when trying to load prgram parameters from params.json`);
+}
 
 const uploadInterval = programParams.uploadInterval || 60000;
 
@@ -57,7 +64,7 @@ const deviceParamConfig = {
   },
 };
 
-//   sprintf(ascii,"%s%lu&n=%lu&e=%lu&p=%lu", "/sunnylog/meterupload.php?h=", mvBezugHT, mvBezugNT, mvEinspeisung, mvPVProduction );
+const registerCountForUpload = countRegistersForUpload(deviceParamConfig);
 
 SerialPort.list().then((ports) => {
   ports.forEach(function (port) {
@@ -73,12 +80,15 @@ function deviceReader(deviceParams) {
 
   port.open(function (err) {
     if (err) {
-      return console.log("Error opening port: ", err.message);
+      return console.log(
+        "[ERROR] when trying to open Serial port: ",
+        err.message
+      );
     }
   });
 
   port.on("open", function () {
-    console.log(`Port ${port.path} opened.`);
+    console.log(`[INIT]: Serial Port ${port.path} opened.`);
   });
 
   const parser = port.pipe(
@@ -88,8 +98,8 @@ function deviceReader(deviceParams) {
   parser.on("data", (buf) => {
     for (const register of deviceParams.registers) {
       let reading = readMeter(buf, register.delimiter, deviceParams.bytes);
-      if (reading)
-        console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
+      // if (reading)
+      // console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
       collectedReadings[register.urlParam] = reading;
     }
     sendAfterInterval();
@@ -108,9 +118,8 @@ function sendAfterInterval() {
         validReadings++;
       }
     }
-    if (validReadings == 4) {
-      //Todo : needs to be count from Device Params with urlparam set
-      console.log(`R: ${validReadings}, URL: ${url}`);
+    if (validReadings == registerCountForUpload) {
+      console.log(`[INFO] Readings: ${validReadings}, URL: ${url}`);
       httpGet(url);
       lastSentTimestamp = now;
     }
@@ -123,9 +132,13 @@ function httpGet(url) {
       response
         .text()
         .then((text) => console.log(text))
-        .catch((err) => console.log("CATCH RESPONSE: " + err));
+        .catch((err) =>
+          console.log("[ERROR] Promise rejected - HTTP response.text() " + err)
+        );
     })
-    .catch((err) => console.log("CATCH FETCH: " + err));
+    .catch((err) =>
+      console.log("[ERROR] Promise rejected - HTTP fetch()  " + err)
+    );
 }
 
 function readMeter(buf, delimiter, byteCount = 8) {
@@ -137,4 +150,15 @@ function readMeter(buf, delimiter, byteCount = 8) {
     }
   }
   return reading;
+}
+
+function countRegistersForUpload(deviceParamConfig) {
+  let count = 0;
+  for (const device in deviceParamConfig) {
+    for (const register of registers) {
+      if (register.urlParam) count++;
+    }
+  }
+  console.log(`[INIT] ${registerCountForUpload} registers for upload.`);
+  return count;
 }
