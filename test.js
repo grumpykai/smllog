@@ -6,8 +6,10 @@ const fetch = (...args) =>
 let lastSentTimestamp = 0;
 const collectedReadings = {};
 
+let programParams;
+
 try {
-  const programParams = require("./params.json");
+  programParams = require("./params.json");
   console.log(
     `[INIT] params.json loaded. URL for upload: ${programParams.url}`
   );
