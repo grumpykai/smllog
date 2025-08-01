@@ -78,8 +78,8 @@ function deviceReader(deviceParams) {
       // console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
       if (reading > 0 && register.urlParam) {
         collectedReadings[register.urlParam] = reading;
-        currentReading[register.urlParam] = { value: reading, timestamp: Date.now() };
-        calcWattage(register.urlParam);
+        //        currentReading[register.urlParam] = { value: reading, timestamp: Date.now() };
+        //        calcWattage(register.urlParam);
       }
     }
     sendAfterInterval();
