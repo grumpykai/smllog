@@ -1,6 +1,8 @@
 {
   "url": "http://www.kai-merklein.de/sunnylog/meterupload.php",
   "uploadInterval": 60000,
+  "mqttServer": "homeassistant.local",
+  "mqttInterval": 10000,
   "deviceParameters": {
     "mainDevice": {
       "serialPath": "/dev/ttyUSB0",
