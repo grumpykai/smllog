@@ -1,6 +1,6 @@
 var SerialPort = require("serialport");
 
-const mqtt = require('mqtt');
+//const mqtt = require('mqtt');
 
 const Delimiter = require("@serialport/parser-delimiter");
 const fetch = (...args) =>
@@ -10,7 +10,7 @@ let lastSentTimestamp = 0;
 let lastMqttTimestamp = 0;
 const collectedReadings = {};
 
-const client = mqtt.connect('mqtt://test.mosquitto.org');
+//const client = mqtt.connect('mqtt://test.mosquitto.org');
 
 let programParams;
 
@@ -94,12 +94,12 @@ function calcWattage(urlParam) {
     }
 
     // Publish to MQTT  
-    if (client.connected && Date.now() - lastMqttTimestamp > 10000) {
-      client.publish(`grumpykai-test-energy`, JSON.stringify({ [urlParam]: value }));
-      lastMqttTimestamp = Date.now();
-      console.log(`[MQTT] Published ${urlParam}: ${value}`);
-    }
-
+    /*  if (client.connected && Date.now() - lastMqttTimestamp > 10000) {
+        client.publish(`grumpykai-test-energy`, JSON.stringify({ [urlParam]: value }));
+        lastMqttTimestamp = Date.now();
+        console.log(`[MQTT] Published ${urlParam}: ${value}`);
+      }
+  */
     lastReading[urlParam] = { value, timestamp };
   }
 }
