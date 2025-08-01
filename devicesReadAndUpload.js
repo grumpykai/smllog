@@ -12,6 +12,8 @@ const collectedReadings = {};
 const currentReading = {};
 const lastReading = {};
 
+const lastWattTimestamp = 0;
+
 //const client = mqtt.connect('mqtt://test.mosquitto.org');
 
 let programParams;
@@ -83,6 +85,10 @@ function deviceReader(deviceParams) {
 }
 
 function calcWattage(urlParam) {
+
+  if (Date.now() - lastWattTimestamp < 10000) {
+    return; // Avoid recalculating wattage too frequently
+  }
   if (currentReading[urlParam]) {
     const { value, timestamp } = currentReading[urlParam];
     if (lastReading[urlParam]) {
@@ -103,6 +109,7 @@ function calcWattage(urlParam) {
       }
   */
     lastReading[urlParam] = { value, timestamp };
+    lastWattTimestamp = Date.now();
   }
 }
 
