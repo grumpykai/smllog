@@ -1,0 +1,38 @@
+{
+  "url": "http://www.kai-merklein.de/sunnylog/meterupload.php",
+  "uploadInterval": 60000,
+  "deviceParameters": {
+    "mainDevice": {
+      "serialPath": "/dev/ttyUSB0",
+      "bytes": 8,
+      "registers": [
+        {
+          "obis": "1.8.1",
+          "urlParam": "h",
+          "delimiter": [119, 7, 1, 0, 1, 8, 1, 255, 1, 1, 98, 30, 82, 255, 89]
+        },
+        {
+          "obis": "1.8.2",
+          "urlParam": "n",
+          "delimiter": [119, 7, 1, 0, 1, 8, 2, 255, 1, 1, 98, 30, 82, 255, 89]
+        },
+        {
+          "obis": "2.8.0",
+          "urlParam": "e",
+          "delimiter": [119, 7, 1, 0, 2, 8, 1, 255, 1, 1, 98, 30, 82, 255, 89]
+        }
+      ]
+    },
+    "generationDevice": {
+      "serialPath": "/dev/ttyUSB1",
+      "bytes": 5,
+      "registers": [
+        {
+          "obis": "2.8.1",
+          "urlParam": "p",
+          "delimiter": [119, 7, 1, 0, 2, 8, 1, 255, 1, 1, 98, 30, 82, 255, 86]
+        }
+      ]
+    }
+  }
+}
