@@ -1,10 +1,16 @@
 var SerialPort = require("serialport");
+
+const mqtt = require('mqtt');
+
 const Delimiter = require("@serialport/parser-delimiter");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 let lastSentTimestamp = 0;
+let lastMqttTimestamp = 0;
 const collectedReadings = {};
+
+const client = mqtt.connect('mqtt://test.mosquitto.org');
 
 let programParams;
 
@@ -24,52 +30,6 @@ console.log(`[INIT] Upload Interval is ${uploadInterval / 1000} seconds.`);
 const deviceParamConfig = programParams.deviceParameters;
 
 console.log(deviceParamConfig.mainDevice);
-// {
-//   mainDevice: {
-//     serialPath: "/dev/ttyUSB0",
-//     bytes: 8,
-//     registers: [
-//       {
-//         obis: "1.8.1",
-//         urlParam: "h",
-//         delimiter: Uint8Array.from([
-//           0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
-//           0x1e, 0x52, 0xff, 0x59,
-//         ]),
-//       },
-//       {
-//         obis: "1.8.2",
-//         urlParam: "n",
-//         delimiter: Uint8Array.from([
-//           0x77, 0x07, 0x01, 0x00, 0x01, 0x08, 0x02, 0xff, 0x01, 0x01, 0x62,
-//           0x1e, 0x52, 0xff, 0x59,
-//         ]),
-//       },
-//       {
-//         obis: "2.8.0",
-//         urlParam: "e",
-//         delimiter: Uint8Array.from([
-//           0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
-//           0x1e, 0x52, 0xff, 0x59,
-//         ]),
-//       },
-//     ],
-//   },
-//   generationDevice: {
-//     serialPath: "/dev/ttyUSB1",
-//     bytes: 5,
-//     registers: [
-//       {
-//         obis: "2.8.1",
-//         urlParam: "p",
-//         delimiter: Uint8Array.from([
-//           0x77, 0x07, 0x01, 0x00, 0x02, 0x08, 0x01, 0xff, 0x01, 0x01, 0x62,
-//           0x1e, 0x52, 0xff, 0x56,
-//         ]),
-//       },
-//     ],
-//   },
-// };
 
 const registerCountForUpload = countRegistersForUpload(deviceParamConfig);
 
@@ -113,9 +73,35 @@ function deviceReader(deviceParams) {
       // if (reading)
       // console.log(`OBIS: ${register.obis}, Meter Reading: ${reading}`);
       collectedReadings[register.urlParam] = reading;
+      currentReading[register.urlParam] = { value: reading, timestamp: Date.now() };
+      calcWattage(register.urlParam);
     }
     sendAfterInterval();
   });
+}
+
+function calcWattage(urlParam) {
+  if (currentReading[urlParam]) {
+    const { value, timestamp } = currentReading[urlParam];
+    if (lastReading[urlParam]) {
+      const lastValue = lastReading[urlParam].value;
+      const lastTimestamp = lastReading[urlParam].timestamp;
+      if (lastValue && lastTimestamp) {
+        const timeDiff = (timestamp - lastTimestamp) / 1000; // in seconds
+        const wattage = ((value - lastValue) / timeDiff) * 1000; // in watts
+        console.log(`Wattage for ${urlParam}: ${wattage} W, Time Diff: ${timeDiff} s`);
+      }
+    }
+
+    // Publish to MQTT  
+    if (client.connected && Date.now() - lastMqttTimestamp > 10000) {
+      client.publish(`grumpykai-test-energy`, JSON.stringify({ [urlParam]: value }));
+      lastMqttTimestamp = Date.now();
+      console.log(`[MQTT] Published ${urlParam}: ${value}`);
+    }
+
+    lastReading[urlParam] = { value, timestamp };
+  }
 }
 
 function sendAfterInterval() {
