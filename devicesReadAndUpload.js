@@ -10,6 +10,7 @@ let lastSentTimestamp = 0;
 let lastMqttTimestamp = 0;
 const collectedReadings = {};
 const currentReading = {};
+const lastReading = {};
 
 //const client = mqtt.connect('mqtt://test.mosquitto.org');
 
