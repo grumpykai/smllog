@@ -1,4 +1,13 @@
-# smllog
+Table of Contents
+
+- [About](#about)
+- [Preparation (on Raspberry PI)](#preparation-on-raspberry-pi)
+  - [Install Node 12.x](#install-node-12x)
+  - [Install node-gyp and node-pre-gyp globally](#install-node-gyp-and-node-pre-gyp-globally)
+  - [Adding to crontab](#adding-to-crontab)
+- [Required Configuration](#required-configuration)
+
+# About
 
 SML Logger using NodeJS on Raspberry PI
 
@@ -42,4 +51,4 @@ The Upload URL **must** be configured in file **params.json**. A template for th
 }
 ```
 
-Node-Fetch is used to send the meter readings via GET to that url. The get parameter names can be configured in the device configuration, also in file params.json
+Node-Fetch is used to send the meter readings via GET to that url. The get parameter names can be configured in the device configuration, also in file **params.json**
