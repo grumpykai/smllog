@@ -100,8 +100,8 @@ function calcWattage(urlParam) {
       const lastTimestamp = lastReading[urlParam].timestamp;
 
       if (lastValue && lastTimestamp && lastTimestamp < timestamp + 10000) {
-        const timeDiff = (timestamp - lastTimestamp) / 1000; // in seconds
-        const wattage = ((value - lastValue) / timeDiff) * 1000; // in watts
+        const timeDiff = (timestamp - lastTimestamp)
+        const wattage = ((value - lastValue) / timeDiff) / 3.6; // in watts
         console.log(`Wattage for ${urlParam}: ${wattage} W, Time Diff: ${timeDiff} s`);
         lastReading[urlParam] = { value, timestamp };
       }
