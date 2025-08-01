@@ -87,10 +87,16 @@ function deviceReader(deviceParams) {
 function calcWattage(urlParam) {
 
   if (currentReading[urlParam]) {
+
     const { value, timestamp } = currentReading[urlParam];
+
     if (lastReading[urlParam]) {
+
+      console.log(`[DEBUG] Calculating wattage for ${urlParam}: ${value} at ${timestamp}`);
+
       const lastValue = lastReading[urlParam].value;
       const lastTimestamp = lastReading[urlParam].timestamp;
+
       if (lastValue && lastTimestamp && lastTimestamp < timestamp + 10000) {
         const timeDiff = (timestamp - lastTimestamp) / 1000; // in seconds
         const wattage = ((value - lastValue) / timeDiff) * 1000; // in watts
