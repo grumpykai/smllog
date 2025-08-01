@@ -98,6 +98,9 @@ function calcWattage(urlParam) {
         lastReading[urlParam] = { value, timestamp };
       }
     }
+    else {
+      lastReading[urlParam] = { value, timestamp };
+    }
 
     // Publish to MQTT  
     /*  if (client.connected && Date.now() - lastMqttTimestamp > 10000) {
