@@ -109,8 +109,8 @@ function calcWattage(urlParam) {
       }
   */
     lastReading[urlParam] = { value, timestamp };
-    lastWattTimestamp = Date.now();
   }
+  lastWattTimestamp = Date.now();
 }
 
 function sendAfterInterval() {
