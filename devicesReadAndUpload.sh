@@ -13,4 +13,4 @@ node --version
 # npm --version
 
 cd /home/pi/smllog
-#node devicesReadAndUpload.js > log_devicesReadAndUpload.log
+node devicesReadAndUpload.js > log_devicesReadAndUpload.log
